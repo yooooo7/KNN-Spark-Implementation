@@ -82,12 +82,13 @@ def format(record):
 def f_res(res):
     return res.map(format)
 
-def show_metrics(res):
-    metrics = MultilabelMetrics(res)
-    print("Recall = %s" % metrics.recall())
-    print("Precision = %s" % metrics.precision())
-    print("F1 measure = %s" % metrics.f1Measure())
-    print("Accuracy = %s" % metrics.accuracy)
+def show_metrics(predictions_and_labels):
+    metrics = MultilabelMetrics(predictions_and_labels)
+    labels = predictions_and_labels.flatMap(lambda x: x[1]).distinct().collect()
+    for label in labels:
+        print("Class %s precision = %s" % (label, metrics.precision(label)))
+        print("Class %s recall = %s" % (label, metrics.recall(label)))
+        print("Class %s F1 Measure = %s" % (label, metrics.f1Measure(label)))
 
 # def indiv_s(result, metrics):
 #     labels = result.flatMap(lambda x: x[1]).distinct().collect()

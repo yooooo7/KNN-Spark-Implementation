@@ -27,13 +27,13 @@ def main():
     knn_m = KNN(tr_pca, tr_label)
     result = knn_m.predict(test_pca)
 
-    # show precision, recall and f1-score overall
-    show_metrics(result)
-
     # format result and output
     formatted_res = f_res(result)
     print(formatted_res.take(20))
     # result.saveAsTextFile(output_path)
+
+    # show precision, recall and f1-score overall
+    show_metrics(result)
 
     stop_context()
 
