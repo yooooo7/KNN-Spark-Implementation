@@ -75,10 +75,6 @@ class KNN(object):
     def predict(self, test_pca):
         return test_pca.rdd.map(self.getNeighbours)
 
-def format(record):
-    pre, ori = record
-    return ("The prediction is {}; original label is {}".format(pre,ori))
-
 def show_metrics(predictions_and_labels):
     metrics = MultilabelMetrics(predictions_and_labels)
     labels = predictions_and_labels.flatMap(lambda x: x[1]).distinct().collect()
