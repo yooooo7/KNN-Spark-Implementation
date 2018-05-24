@@ -3,5 +3,5 @@
 spark-submit \
     --master yarn \
     --deploy-mode client \
-    --num-executors 20 \
+    --num-executors 8 \
     code.py \
