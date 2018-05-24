@@ -76,19 +76,19 @@ class KNN(object):
         return test_pca.rdd.map(self.getNeighbours)
 
 def show_metrics(predictions_and_labels):
+    print("start caculate metrics.\n")
     metrics = MultilabelMetrics(predictions_and_labels)
-    labels = predictions_and_labels.map(lambda x: x[1]).distinct().collect()
+    print("finish caculating, start get labels.\n")
+    labels = predictions_and_labels.map(lambda x: x[1])
+    print("finish mapping, start distinct.\n")
+    labels = labels.distinct()
+    print("finish distinct, start collecting.\n")
+    labels = labels.collect()
+    print("finish collecting, start show results.")
     for label in labels:
         print("Class %s precision = %s" % (label, metrics.precision(label)))
         print("Class %s recall = %s" % (label, metrics.recall(label)))
         print("Class %s F1 Measure = %s" % (label, metrics.f1Measure(label)))
-
-# def indiv_s(result, metrics):
-#     labels = result.flatMap(lambda x: x[1]).distinct().collect()
-#     for label in labels:
-#         print("Class %s precision = %s" % (label, metrics.precision(label)))
-#         print("Class %s recall = %s" % (label, metrics.recall(label)))
-#         print("Class %s F1 Measure = %s" % (label, metrics.f1Measure(label)))
 
 def stop_context():
     spark.stop()
