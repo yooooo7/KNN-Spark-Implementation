@@ -28,7 +28,7 @@ def main():
     result = knn_m.predict(test_pca)
 
     # format result and output
-    formatted_res = f_res(result)
+    formatted_res = result.map(format)
     print(formatted_res.take(20))
     # result.saveAsTextFile(output_path)
 

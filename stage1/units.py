@@ -79,9 +79,6 @@ def format(record):
     pre, ori = record
     return ("The prediction is {}; original label is {}".format(pre,ori))
 
-def f_res(res):
-    return res.map(format)
-
 def show_metrics(predictions_and_labels):
     metrics = MultilabelMetrics(predictions_and_labels)
     labels = predictions_and_labels.flatMap(lambda x: x[1]).distinct().collect()
