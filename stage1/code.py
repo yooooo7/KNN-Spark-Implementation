@@ -31,7 +31,7 @@ def main():
     def format(record):
         pre, ori = record
         return ("The prediction is {}; original label is {}".format(pre,ori))
-    
+
     formatted_res = result.map(format)
     print(formatted_res.take(20))
     # result.saveAsTextFile(output_path)

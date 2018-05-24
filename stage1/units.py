@@ -77,7 +77,7 @@ class KNN(object):
 
 def show_metrics(predictions_and_labels):
     metrics = MultilabelMetrics(predictions_and_labels)
-    labels = predictions_and_labels.flatMap(lambda x: x[1]).distinct().collect()
+    labels = predictions_and_labels.map(lambda x: x[1]).distinct().collect()
     for label in labels:
         print("Class %s precision = %s" % (label, metrics.precision(label)))
         print("Class %s recall = %s" % (label, metrics.recall(label)))
