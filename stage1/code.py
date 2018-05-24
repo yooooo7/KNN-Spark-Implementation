@@ -1,8 +1,8 @@
 from units import *
 
 def main():
-    # DATA_PATH = "/share/MNIST/"
-    DATA_PATH = ''
+    DATA_PATH = "/share/MNIST/"
+    # DATA_PATH = ''
     test_file = 'Test-label-28x28.csv'
     train_file = 'Train-label-28x28.csv'
 
