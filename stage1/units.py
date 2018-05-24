@@ -79,16 +79,12 @@ def show_metrics(predictions_and_labels):
     print("start caculate metrics.\n")
     metrics = MultilabelMetrics(predictions_and_labels)
     print("finish caculating, start get labels.\n")
-    labels = predictions_and_labels.map(lambda x: x[1])
-    print("finish mapping, start distinct.\n")
-    labels = labels.distinct()
-    print("finish distinct, start collecting.\n")
-    labels = labels.collect()
-    print("finish collecting, start show results.")
+    labels = predictions_and_labels.map(lambda x: x[1]).distinct().collect()
     for label in labels:
-        print("Class %s precision = %s" % (label, metrics.precision(label)))
-        print("Class %s recall = %s" % (label, metrics.recall(label)))
-        print("Class %s F1 Measure = %s" % (label, metrics.f1Measure(label)))
+        print(labels)
+        # print("Class %s precision = %s" % (label, metrics.precision(label)))
+        # print("Class %s recall = %s" % (label, metrics.recall(label)))
+        # print("Class %s F1 Measure = %s" % (label, metrics.f1Measure(label)))
 
 def stop_context():
     spark.stop()
