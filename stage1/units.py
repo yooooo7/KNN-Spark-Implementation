@@ -1,7 +1,7 @@
 from pyspark.sql import SparkSession
 from pyspark.ml.feature import VectorAssembler
 from pyspark.ml.feature import PCA
-from pyspark.mllib.evaluation import MultilabelMetrics
+# from pyspark.mllib.evaluation import MultilabelMetrics
 import numpy as np
 import argparse
 
@@ -70,21 +70,21 @@ class KNN(object):
         tk_label = [x[0] for x in sorted_com]
         counts = np.bincount(tk_label)
         res = np.argmax(counts).item()
-        return (float(res), label)
+        return (float(res), float(label))
 
     def predict(self, test_pca):
         return test_pca.rdd.map(self.getNeighbours)
 
-def show_metrics(predictions_and_labels):
-    print("start caculate metrics.\n")
-    metrics = MultilabelMetrics(predictions_and_labels)
-    print("finish caculating, start get labels.\n")
-    labels = predictions_and_labels.map(lambda x: x[1]).distinct().collect()
-    for label in sorted(labels):
-        print("{}\n".format(label))
-        print("Class %s precision = %s" % (label, metrics.precision(label)))
-        print("Class %s recall = %s" % (label, metrics.recall(label)))
-        print("Class %s F1 Measure = %s" % (label, metrics.f1Measure(label)))
+# def show_metrics(predictions_and_labels):
+#     print("start caculate metrics.\n")
+#     metrics = MultilabelMetrics(predictions_and_labels)
+#     print("finish caculating, start get labels.\n")
+#     labels = predictions_and_labels.map(lambda x: x[1]).distinct().collect()
+#     for label in sorted(labels):
+#         print("{}\n".format(label))
+#         print("Class %s precision = %s" % (label, metrics.precision(label)))
+#         print("Class %s recall = %s" % (label, metrics.recall(label)))
+#         print("Class %s F1 Measure = %s" % (label, metrics.f1Measure(label)))
 
 def stop_context():
     spark.stop()
