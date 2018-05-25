@@ -1,6 +1,7 @@
 from pyspark.sql import SparkSession
 from pyspark.ml import Pipeline
 from pyspark.ml.classification import NaiveBayes, RandomForestClassifier
+from pyspark.ml.evaluation import MuticlassClassificationEvaluator
 from pyspark.ml.feature import VectorAssembler
 from pyspark.ml.feature import PCA
 
@@ -33,3 +34,10 @@ prediction = model.transform(test)
 prediction = prediction.select(['label','features', 'probability', 'prediction'])
 
 prediction.show(5)
+
+evaluator = MuticlassClassificationEvaluator(labelCol="label", predictionCol="prediction", metricName="accuracy")
+accuracy = evaluator.evaluate(prediction)
+
+print("Test set accuracy =" + str(accuracy))
+
+spark.stop()
