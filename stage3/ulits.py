@@ -30,5 +30,6 @@ model = pipeline.fit(training)
 test = spark.read.csv(DATA_PATH + test_file, header = False, inferSchema = "true").withColumnRenamed("_c0", 'label')
 
 prediction = model.transform(test)
+prediction = prediction.select(['label','features', 'probability', 'prediction'])
 
 prediction.show(5)
