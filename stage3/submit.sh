@@ -3,5 +3,5 @@
 spark-submit \
     --master yarn \
     --deploy-mode client \
-    --num-executors 10 \
+    --num-executors 4 \
     ulits.py \
