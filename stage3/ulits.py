@@ -16,11 +16,10 @@ train_file = 'Train-label-28x28.csv'
 
 # prepare training file
 training = spark.read.csv(DATA_PATH + train_file, header = False, inferSchema = "true").withColumnRenamed("_c0", 'label')
-training = training.withColumn("features", training.columns[1:])
-training.show()
 
 # Configure an ML pipeline, which consists of three stages: assembler, pca, naive bayes
-assembler = VectorAssembler(inputCols = training.columns[1:], outputCol = "features")
+columns = training.columns[1:]
+assembler = VectorAssembler(inputCols = columns, outputCol = "v_features")
 pca = PCA(k = 50, inputCol = assembler.getOutputCol(), outputCol = 'features')
 nb = NaiveBayes(smoothing = 1.0, modelType = "multinomial")
 pipeline = Pipeline(stages = [assembler, pca, nb])
@@ -33,5 +32,3 @@ test = spark.read.csv(DATA_PATH + test_file, header = False, inferSchema = "true
 prediction = model.transform(test)
 
 prediction.show(5)
-
-# rf = RandomForestClassifier
