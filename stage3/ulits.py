@@ -16,7 +16,7 @@ train_file = 'Train-label-28x28.csv'
 
 # prepare training file
 training = spark.read.csv(DATA_PATH + train_file, header = False, inferSchema = "true").withColumnRenamed("_c0", 'label')
-training = training.withColunm("features", training.columns[1:])
+training = training.withColumn("features", training.columns[1:])
 training.show()
 
 # Configure an ML pipeline, which consists of three stages: assembler, pca, naive bayes
