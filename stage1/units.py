@@ -75,7 +75,7 @@ class KNN(object):
     def predict(self, test_pca):
         return test_pca.rdd.map(self.getNeighbours)
 
-def showConfusionMatrix(p_a_ls):
+def showMatrics(p_a_ls):
     schema = StructType([
         StructField("label", StringType(), True),
         StructField("precision", FloatType(), True),
