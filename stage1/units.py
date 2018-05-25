@@ -1,7 +1,7 @@
 from pyspark.sql import SparkSession
 from pyspark.ml.feature import VectorAssembler
 from pyspark.ml.feature import PCA
-# from pyspark.mllib.evaluation import MultilabelMetrics
+from pyspark.mllib.evaluation import MulticlassMetrics
 import numpy as np
 import argparse
 
@@ -74,6 +74,9 @@ class KNN(object):
 
     def predict(self, test_pca):
         return test_pca.rdd.map(self.getNeighbours)
+
+def showConfusionMatrix(p_a_ls):
+    MulticlassMetrics(p_a_ls).confusionMatrix().show()
 
 def stop_context():
     spark.stop()

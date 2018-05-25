@@ -27,14 +27,15 @@ def main():
     knn_m = KNN(tr_pca, tr_label)
     result = knn_m.predict(test_pca)
 
+    showConfusionMatrix(result)
+
     # format result and output
     def format(record):
         pre, ori = record
-        return ("The prediction is {}; original label is {}".format(pre,ori))
+        return ("label: {}, prediction: {};".format(ori, pre))
 
     formatted_res = result.map(format)
-    print(formatted_res.take(20))
-    result.saveAsTextFile(output_path)
+    formatted_res.saveAsTextFile(output_path)
 
     stop_context()
 
