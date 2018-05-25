@@ -14,7 +14,7 @@ def init_par():
     parse = argparse.ArgumentParser()
     parse.add_argument("--dimension", help = "PCA dimension", default = 50)
     parse.add_argument("--k", help = "k nearest", default = 5)
-    parse.add_argument("--output", help="the output path", default="as2_stage1/outp_5.24")
+    parse.add_argument("--output", help="the output path", default="as2_stage1/outp_5.25")
     args = parse.parse_args()
     dimension = int(args.dimension)
     k = int(args.k)
@@ -74,17 +74,6 @@ class KNN(object):
 
     def predict(self, test_pca):
         return test_pca.rdd.map(self.getNeighbours)
-
-# def show_metrics(predictions_and_labels):
-#     print("start caculate metrics.\n")
-#     metrics = MultilabelMetrics(predictions_and_labels)
-#     print("finish caculating, start get labels.\n")
-#     labels = predictions_and_labels.map(lambda x: x[1]).distinct().collect()
-#     for label in sorted(labels):
-#         print("{}\n".format(label))
-#         print("Class %s precision = %s" % (label, metrics.precision(label)))
-#         print("Class %s recall = %s" % (label, metrics.recall(label)))
-#         print("Class %s F1 Measure = %s" % (label, metrics.f1Measure(label)))
 
 def stop_context():
     spark.stop()

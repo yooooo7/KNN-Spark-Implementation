@@ -1,5 +1,4 @@
 from units import *
-from pyspark.mllib.evaluation import MultilabelMetrics
 
 def main():
     DATA_PATH = "/share/MNIST/"
@@ -35,15 +34,7 @@ def main():
 
     formatted_res = result.map(format)
     print(formatted_res.take(20))
-    # result.saveAsTextFile(output_path)
-
-    metrics = MultilabelMetrics(result)
-    print(metrics.precision(1.0))
-    print(metrics.precision(2.0))
-    print(metrics.precision(3.0))
-
-    # show precision, recall and f1-score overall
-    show_metrics(result)
+    result.saveAsTextFile(output_path)
 
     stop_context()
 
