@@ -1,7 +1,7 @@
 from pyspark.sql import SparkSession
 from pyspark.ml.feature import VectorAssembler
 from pyspark.ml.feature import PCA
-from pyspark.mllib.evaluation import MulticlassMetrics
+from pyspark.sql.type import StructField, FloatType, StructType, StringType
 import numpy as np
 import argparse
 
@@ -76,7 +76,25 @@ class KNN(object):
         return test_pca.rdd.map(self.getNeighbours)
 
 def showConfusionMatrix(p_a_ls):
-    MulticlassMetrics(p_a_ls).confusionMatrix().show()
+    schema = StructType([
+        StructField("label", StringType(), True),
+        StructField("precision", FloatType(), True),
+        StructField("recall", FloatType(), True),
+        StructField("f1-score", FloatType(), True)
+    ])
+    result = spark.createDataFrame(spark.sparkContext.emptyRDD(), schema)
+    for i in range(10):
+        TP = p_a_ls.filter('label' = i and 'prediction' = i).count()
+        TN = p_a_ls.filter('label' != i and 'prediction' != i).count()
+        FP = p_a_ls.filter('label' != i and 'prediction' = i).count()
+        FN = p_a_ls.filter('label' = i and 'prediction' != i).count()
+        precision = TP / (TP + FP)
+        recall = TP / (TP + FN)
+        f1_score = 2*precision*recall / (precision + recall)
+        row_list = [i, precision, recall, f1f1_score]
+        row = spark.createDataFrame(row_list, schema)
+        result.unionAll(row)
+    return result
 
 def stop_context():
     spark.stop()

@@ -27,7 +27,8 @@ def main():
     knn_m = KNN(tr_pca, tr_label)
     result = knn_m.predict(test_pca)
 
-    showConfusionMatrix(result)
+    metrics = showMatrics(result.toDF(['prediction', 'label']))
+    metrics.show()
 
     # format result and output
     def format(record):
