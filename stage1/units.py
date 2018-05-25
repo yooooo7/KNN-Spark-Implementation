@@ -1,7 +1,7 @@
 from pyspark.sql import SparkSession
 from pyspark.ml.feature import VectorAssembler
 from pyspark.ml.feature import PCA
-from pyspark.sql.type import StructField, FloatType, StructType, StringType
+from pyspark.sql.types import StructField, FloatType, StructType, StringType
 import numpy as np
 import argparse
 
