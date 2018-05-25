@@ -84,6 +84,7 @@ def showMatrics(p_a_ls):
     ])
     result = spark.createDataFrame(spark.sparkContext.emptyRDD(), schema)
     for i in range(10):
+        i = float(i)
         TP = p_a_ls.filter(p_a_ls['label'] == i & p_a_ls['prediction'] == i).count()
         TN = p_a_ls.filter(p_a_ls['label'] != i & p_a_ls['prediction'] != i).count()
         FP = p_a_ls.filter(p_a_ls['label'] != i & p_a_ls['prediction'] == i).count()
