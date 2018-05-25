@@ -30,7 +30,7 @@ model = pipeline.fit(training)
 prediction = model.transform(test)
 prediction = prediction.select(['label', 'prediction'])
 
-prediction.show(5)
+prediction.show(10)
 
 # metrics
 evaluator = MulticlassClassificationEvaluator(labelCol="label", predictionCol="prediction", metricName="accuracy")
