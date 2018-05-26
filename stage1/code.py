@@ -28,24 +28,7 @@ def main():
     result = knn_m.predict(test_pca)
     print(result.take(5))
 
-    def conf_matrix(record):
-        global TP_counter
-        global FP_counter
-        global FN_counter
-        prediction, label = record
-        print(prediction)
-        print(label)
-        if prediction == label:
-            TP_counter[prediction] += 1
-        else:
-            FN_counter[label] += 1
-            FP_counter[prediction] += 1
-
-    result.foreach(conf_matrix)
-
-    print(TP_counter)
-    print(FP_counter)
-    print(FN_counter)
+    knn_m.con_m()
 
     # format result and output
     def format(record):

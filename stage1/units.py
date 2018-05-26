@@ -87,8 +87,34 @@ class KNN(object):
         res = np.argmax(counts).item()
         return (int(res), int(label))
 
+    @staticmethod
+    def conf_matrix(record):
+        global TP_counter
+        global FP_counter
+        global FN_counter
+        prediction, label = record
+        print(prediction)
+        print(label)
+        if prediction == label:
+            TP_counter[prediction] += 1
+        else:
+            FN_counter[label] += 1
+            FP_counter[prediction] += 1
+
     def predict(self, test_pca):
-        return test_pca.rdd.map(self.getNeighbours)
+        self.result = test_pca.rdd.map(self.getNeighbours)
+        return self.result
+
+    def con_m(self):
+        self.result.foreach(conf_matrix)
+
+        global TP_counter
+        global FP_counter
+        global FN_counter
+
+        print(TP_counter)
+        print(FP_counter)
+        print(FN_counter)
 
 def stop_context():
     spark.stop()
