@@ -1,5 +1,4 @@
 from units import *
-from pyspark.accumulators import AccumulatorParam
 
 def main():
     DATA_PATH = "/share/MNIST/"

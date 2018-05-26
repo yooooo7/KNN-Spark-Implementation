@@ -4,6 +4,7 @@ from pyspark.ml.feature import PCA
 from pyspark.sql.types import StructField, FloatType, StructType, StringType
 import numpy as np
 import argparse
+from pyspark.accumulators import AccumulatorParam
 
 spark = SparkSession \
     .builder \
