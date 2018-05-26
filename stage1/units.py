@@ -83,9 +83,9 @@ class KNN(object):
         return test_pca.rdd.map(self.getNeighbours)
 
 def showMatrics(p_a_ls):
-    print(TP_counter[7])
-    print(FP_counter[6])
-    print(FN_counter[5])
+    print(TP_counter.value[7])
+    print(FP_counter.value[6])
+    print(FN_counter.value[5])
 
     def conf_matrix(record):
         global TP_counter
@@ -97,10 +97,10 @@ def showMatrics(p_a_ls):
         print(prediction)
         print(label)
         if prediction == label:
-            TP_counter[prediction] += 1
+            TP_counter.value[prediction] += 1
         else:
-            FN_counter[label] += 1
-            FP_counter[prediction] += 1
+            FN_counter.value[label] += 1
+            FP_counter.value[prediction] += 1
 
     p_a_ls.foreach(conf_matrix)
 
