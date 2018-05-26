@@ -11,6 +11,12 @@ spark = SparkSession \
     .appName("Spark KNN implementation") \
     .getOrCreate()
 
+LABEL_NUM = 10
+
+TP_counter = spark.sparkContext.accumulator([0 for i in range(LABEL_NUM)], AccumulatorParam())
+FP_counter = spark.sparkContext.accumulator([0 for i in range(LABEL_NUM)], AccumulatorParam())
+FN_counter = spark.sparkContext.accumulator([0 for i in range(LABEL_NUM)], AccumulatorParam())
+
 def init_par():
     parse = argparse.ArgumentParser()
     parse.add_argument("--dimension", help = "PCA dimension", default = 50)
@@ -76,10 +82,6 @@ class KNN(object):
     def predict(self, test_pca):
         return test_pca.rdd.map(self.getNeighbours)
 
-TP_counter = spark.sparkContext.accumulator([0 for i in range(10)], AccumulatorParam())
-FP_counter = spark.sparkContext.accumulator([0 for i in range(10)], AccumulatorParam())
-FN_counter = spark.sparkContext.accumulator([0 for i in range(10)], AccumulatorParam())
-
 def showMatrics(p_a_ls):
     print(TP_counter)
     print(FP_counter)
@@ -89,7 +91,8 @@ def showMatrics(p_a_ls):
         global TP_counter
         global FP_counter
         global FN_counter
-        prediction, label = record
+        prediction = record[0]
+        label = record[1]
         if prediction == label:
             TP_counter[prediction] += 1
         else:
