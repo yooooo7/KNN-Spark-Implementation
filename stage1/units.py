@@ -89,9 +89,7 @@ class KNN(object):
 
     @staticmethod
     def conf_matrix(record):
-        global TP_counter
-        global FP_counter
-        global FN_counter
+        global TP_counter, FP_counter, FN_counter
         prediction, label = record
         m = [0] * LABEL_NUM
         n1 = [0] * LABEL_NUM
@@ -112,20 +110,22 @@ class KNN(object):
     def con_m(self):
         self.result.foreach(self.conf_matrix)
 
-        global TP_counter
-        global FP_counter
-        global FN_counter
+        for i in range(LABEL_NUM):
+            TPs = TP_counter.value
+            FPs = FP_counter.value
+            FNs = FN_counter.value
+            label = str(i)
+            p = TPs[i] / float( TPs[i] + FPs[i] )
+            r = TPs[i] / float( TPs[i] + FNs[i] )
+            F1_score = 2*p*r / (p + r)
+            print("label: {}\nprecision: {}\nrecall: {}\nf1-score: {}\n".format(label, p, r, F1_score))
 
-        print(TP_counter)
-        print(FP_counter)
-        print(FN_counter)
 
 def stop_context():
     spark.stop()
 
 def main():
     DATA_PATH = "/share/MNIST/"
-    # DATA_PATH = ''
     test_file = 'Test-label-28x28.csv'
     train_file = 'Train-label-28x28.csv'
 
