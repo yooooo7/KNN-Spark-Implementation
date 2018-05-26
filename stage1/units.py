@@ -91,8 +91,11 @@ def showMatrics(p_a_ls):
         global TP_counter
         global FP_counter
         global FN_counter
+        print(record)
         prediction = record[0]
         label = record[1]
+        print(prediction)
+        print(label)
         if prediction == label:
             TP_counter[prediction] += 1
         else:
