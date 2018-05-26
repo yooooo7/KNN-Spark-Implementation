@@ -85,11 +85,11 @@ class ListParam(AccumulatorParam):
         acc1.extend(acc2)
         return acc1
 
-def showMatrics(p_a_ls):
+TP_counter = spark.sparkContext.accumulator([0 for i in range(LABEL_NUM)], ListParam())
+FP_counter = spark.sparkContext.accumulator([0 for i in range(LABEL_NUM)], ListParam())
+FN_counter = spark.sparkContext.accumulator([0 for i in range(LABEL_NUM)], ListParam())
 
-    TP_counter = spark.sparkContext.accumulator([0 for i in range(LABEL_NUM)], ListParam())
-    FP_counter = spark.sparkContext.accumulator([0 for i in range(LABEL_NUM)], ListParam())
-    FN_counter = spark.sparkContext.accumulator([0 for i in range(LABEL_NUM)], ListParam())
+def showMatrics(p_a_ls):
 
     def conf_matrix(record):
         global TP_counter
