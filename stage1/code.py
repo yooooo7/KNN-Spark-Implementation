@@ -27,16 +27,15 @@ def main():
     knn_m = KNN(tr_pca, tr_label)
     result = knn_m.predict(test_pca)
 
-    metrics = showMatrics(result.toDF(['prediction', 'label']))
-    metrics.show()
+    showMatrics(result)
 
     # format result and output
     def format(record):
         pre, ori = record
         return ("label: {}, prediction: {};".format(ori, pre))
 
-    formatted_res = result.map(format)
-    formatted_res.saveAsTextFile(output_path)
+    # formatted_res = result.map(format)
+    # formatted_res.saveAsTextFile(output_path)
 
     stop_context()
 

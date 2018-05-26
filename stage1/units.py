@@ -4,6 +4,7 @@ from pyspark.ml.feature import PCA
 from pyspark.sql.types import StructField, FloatType, StructType, StringType
 import numpy as np
 import argparse
+from pyspark.accumulators import AccumulatorParam
 
 spark = SparkSession \
     .builder \
@@ -70,32 +71,32 @@ class KNN(object):
         tk_label = [x[0] for x in sorted_com]
         counts = np.bincount(tk_label)
         res = np.argmax(counts).item()
-        return (float(res), float(label))
+        return (res, label)
 
     def predict(self, test_pca):
         return test_pca.rdd.map(self.getNeighbours)
 
 def showMatrics(p_a_ls):
-    schema = StructType([
-        StructField("label", StringType(), True),
-        StructField("precision", FloatType(), True),
-        StructField("recall", FloatType(), True),
-        StructField("f1-score", FloatType(), True)
-    ])
-    result = spark.createDataFrame(spark.sparkContext.emptyRDD(), schema)
-    for i in range(10):
-        i = float(i)
-        TP = p_a_ls.filter(p_a_ls['label'] == i & p_a_ls['prediction'] == i).count()
-        TN = p_a_ls.filter(p_a_ls['label'] != i & p_a_ls['prediction'] != i).count()
-        FP = p_a_ls.filter(p_a_ls['label'] != i & p_a_ls['prediction'] == i).count()
-        FN = p_a_ls.filter(p_a_ls['label'] == i & p_a_ls['prediction'] != i).count()
-        precision = TP / (TP + FP)
-        recall = TP / (TP + FN)
-        f1_score = 2*precision*recall / (precision + recall)
-        row_list = [i, precision, recall, f1f1_score]
-        row = spark.createDataFrame(row_list, schema)
-        result.unionAll(row)
-    return result
+    TP_counter = spark.sparkContext.accumulator([0 for i in range(10)], AccumulatorParam())
+    FP_counter = spark.sparkContext.accumulator([0 for i in range(10)], AccumulatorParam())
+    FN_counter = spark.sparkContext.accumulator([0 for i in range(10)], AccumulatorParam())
+
+    def conf_matrix(record):
+        global TP_counter
+        global FP_counter
+        global FN_counter
+        prediction, label = record
+        if prediction == label:
+            TP[prediction] += 1
+        else:
+            FN[label] += 1
+            FP[prediction] += 1
+
+    p_a_ls.foreach(conf_matrix)
+
+    print(TP_counter)
+    print(FP_counter)
+    print(FN_counter)
 
 def stop_context():
     spark.stop()
