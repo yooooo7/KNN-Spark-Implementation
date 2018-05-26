@@ -102,7 +102,7 @@ class KNN(object):
             c[prediction] = 1
             FP_counter += c
 
-        return (prediction, label)
+        return ("label: {}, prediction: {};".format(label, prediction))
 
     def predict(self, test_pca):
         self.result = test_pca.rdd.map(self.getNeighbours)
@@ -110,19 +110,15 @@ class KNN(object):
 
     def show_metrics(self):
 
-        print(TP_counter)
-        print(FP_counter)
-        print(FN_counter)
-
-        # for i in range(LABEL_NUM):
-        #     TPs = TP_counter.value
-        #     FPs = FP_counter.value
-        #     FNs = FN_counter.value
-        #     label = str(i)
-        #     p = round(TPs[i] / float( TPs[i] + FPs[i] ), 2)
-        #     r = round(TPs[i] / float( TPs[i] + FNs[i] ), 2)
-        #     F1_score = round(2*p*r / (p + r), 2)
-        #     print("label: {}\nprecision: {}\nrecall: {}\nf1-score: {}\n".format(label, p, r, F1_score))
+        for i in range(LABEL_NUM):
+            TPs = TP_counter.value
+            FPs = FP_counter.value
+            FNs = FN_counter.value
+            label = str(i)
+            p = round(TPs[i] / float( TPs[i] + FPs[i] ), 2)
+            r = round(TPs[i] / float( TPs[i] + FNs[i] ), 2)
+            F1_score = round(2*p*r / (p + r), 2)
+            print("label: {}\nprecision: {}\nrecall: {}\nf1-score: {}\n".format(label, p, r, F1_score))
 
 def stop_context():
     spark.stop()
@@ -153,17 +149,10 @@ def main():
     # KNN
     knn_m = KNN(tr_pca, tr_label)
     result = knn_m.predict(test_pca)
-    print(result.take(10))
+    print(result.take(10000))
 
+    # Show metrics
     knn_m.show_metrics()
-
-    # format result and output
-    def format(record):
-        pre, ori = record
-        return ("label: {}, prediction: {};".format(ori, pre))
-
-    # formatted_res = result.map(format)
-    # formatted_res.saveAsTextFile(output_path)
 
     stop_context()
 
