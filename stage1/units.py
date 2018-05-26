@@ -84,12 +84,11 @@ class KNN(object):
         sorted_com = sorted(com, key = lambda x: x[1])[:5]
         tk_label = [x[0] for x in sorted_com]
         counts = np.bincount(tk_label)
-        res = np.argmax(counts).item()
+        prediction = np.argmax(counts).item()
 
-        res = int(res)
+        prediction = int(prediction)
         label = int(label)
         global TP_counter, FP_counter, FN_counter
-        prediction, label = record
         c = [0] * LABEL_NUM
         if prediction == label:
             c[prediction] = 1
@@ -103,7 +102,7 @@ class KNN(object):
             c[prediction] = 1
             FP_counter += c
 
-        return (res, label)
+        return (prediction, label)
 
     def predict(self, test_pca):
         self.result = test_pca.rdd.map(self.getNeighbours)
