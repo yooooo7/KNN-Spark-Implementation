@@ -110,15 +110,19 @@ class KNN(object):
 
     def show_metrics(self):
 
-        for i in range(LABEL_NUM):
-            TPs = TP_counter.value
-            FPs = FP_counter.value
-            FNs = FN_counter.value
-            label = str(i)
-            p = round(TPs[i] / float( TPs[i] + FPs[i] ), 2)
-            r = round(TPs[i] / float( TPs[i] + FNs[i] ), 2)
-            F1_score = round(2*p*r / (p + r), 2)
-            print("label: {}\nprecision: {}\nrecall: {}\nf1-score: {}\n".format(label, p, r, F1_score))
+        print(TP_counter)
+        print(FP_counter)
+        print(FN_counter)
+
+        # for i in range(LABEL_NUM):
+        #     TPs = TP_counter.value
+        #     FPs = FP_counter.value
+        #     FNs = FN_counter.value
+        #     label = str(i)
+        #     p = round(TPs[i] / float( TPs[i] + FPs[i] ), 2)
+        #     r = round(TPs[i] / float( TPs[i] + FNs[i] ), 2)
+        #     F1_score = round(2*p*r / (p + r), 2)
+        #     print("label: {}\nprecision: {}\nrecall: {}\nf1-score: {}\n".format(label, p, r, F1_score))
 
 def stop_context():
     spark.stop()
