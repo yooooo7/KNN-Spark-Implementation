@@ -17,7 +17,7 @@ class ListParam(AccumulatorParam):
     def zero(self, v):
         return [0] * len(v)
     def addInPlace(self, acc1, acc2):
-        for i in xrange(len(acc1)):
+        for i in range(len(acc1)):
             acc1[i] += acc2[i]
         return acc1
 
