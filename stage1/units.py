@@ -76,10 +76,11 @@ class KNN(object):
     def predict(self, test_pca):
         return test_pca.rdd.map(self.getNeighbours)
 
+TP_counter = spark.sparkContext.accumulator([0 for i in range(10)], AccumulatorParam())
+FP_counter = spark.sparkContext.accumulator([0 for i in range(10)], AccumulatorParam())
+FN_counter = spark.sparkContext.accumulator([0 for i in range(10)], AccumulatorParam())
+
 def showMatrics(p_a_ls):
-    TP_counter = spark.sparkContext.accumulator([0 for i in range(10)], AccumulatorParam())
-    FP_counter = spark.sparkContext.accumulator([0 for i in range(10)], AccumulatorParam())
-    FN_counter = spark.sparkContext.accumulator([0 for i in range(10)], AccumulatorParam())
 
     def conf_matrix(record):
         global TP_counter
