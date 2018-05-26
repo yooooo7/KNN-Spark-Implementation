@@ -87,10 +87,10 @@ def showMatrics(p_a_ls):
         global FN_counter
         prediction, label = record
         if prediction == label:
-            TP[prediction] += 1
+            TP_counter[prediction] += 1
         else:
-            FN[label] += 1
-            FP[prediction] += 1
+            FN_counter[label] += 1
+            FP_counter[prediction] += 1
 
     p_a_ls.foreach(conf_matrix)
 
