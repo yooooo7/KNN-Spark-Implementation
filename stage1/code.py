@@ -29,6 +29,13 @@ def main():
     result = knn_m.predict(test_pca)
     print(result.take(5))
 
+    class ListParam(AccumulatorParam):
+        def zero(self, v):
+            return [0] * len(v)
+        def addInPlace(self, acc1, acc2):
+            acc1.extend(acc2)
+            return acc1
+
     TP_counter = spark.sparkContext.accumulator([0 for i in range(LABEL_NUM)], ListParam())
     FP_counter = spark.sparkContext.accumulator([0 for i in range(LABEL_NUM)], ListParam())
     FN_counter = spark.sparkContext.accumulator([0 for i in range(LABEL_NUM)], ListParam())

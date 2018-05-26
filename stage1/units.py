@@ -77,12 +77,5 @@ class KNN(object):
     def predict(self, test_pca):
         return test_pca.rdd.map(self.getNeighbours)
 
-class ListParam(AccumulatorParam):
-    def zero(self, v):
-        return [0] * len(v)
-    def addInPlace(self, acc1, acc2):
-        acc1.extend(acc2)
-        return acc1
-
 def stop_context():
     spark.stop()
