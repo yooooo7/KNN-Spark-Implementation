@@ -2,7 +2,6 @@ from units import *
 
 def main():
     DATA_PATH = "/share/MNIST/"
-    # DATA_PATH = ''
     test_file = 'Test-label-28x28.csv'
     train_file = 'Train-label-28x28.csv'
 
@@ -28,7 +27,7 @@ def main():
     result = knn_m.predict(test_pca)
     print(result.take(5))
 
-    knn_m.con_m()
+    knn_m.show_metrics()
 
     # format result and output
     def format(record):

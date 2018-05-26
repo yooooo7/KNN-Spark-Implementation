@@ -88,80 +88,38 @@ class KNN(object):
         return (int(res), int(label))
 
     @staticmethod
-    def conf_matrix(record):
+    def prePRF1(record):
         global TP_counter, FP_counter, FN_counter
         prediction, label = record
-        m = [0] * LABEL_NUM
-        n1 = [0] * LABEL_NUM
-        n2 = [0] * LABEL_NUM
+        c = [0] * LABEL_NUM
         if prediction == label:
-            m[prediction] = 1
-            TP_counter += m
+            c[prediction] = 1
+            TP_counter += c
+            c[prediction] = 0
         else:
-            n1[label] = 1
-            FN_counter += n1
-            n2[prediction] = 1
-            FP_counter += n2
+            c[label] = 1
+            FN_counter += c
+            c[label] = 0
+
+            c[prediction] = 1
+            FP_counter += c
 
     def predict(self, test_pca):
         self.result = test_pca.rdd.map(self.getNeighbours)
         return self.result
 
-    def con_m(self):
-        self.result.foreach(self.conf_matrix)
+    def show_metrics(self):
+        self.result.foreach(self.prePRF1)
 
         for i in range(LABEL_NUM):
             TPs = TP_counter.value
             FPs = FP_counter.value
             FNs = FN_counter.value
             label = str(i)
-            p = TPs[i] / float( TPs[i] + FPs[i] )
-            r = TPs[i] / float( TPs[i] + FNs[i] )
-            F1_score = 2*p*r / (p + r)
+            p = round(TPs[i] / float( TPs[i] + FPs[i] ), 2)
+            r = round(TPs[i] / float( TPs[i] + FNs[i] ), 2)
+            F1_score = round(2*p*r / (p + r), 2)
             print("label: {}\nprecision: {}\nrecall: {}\nf1-score: {}\n".format(label, p, r, F1_score))
-
 
 def stop_context():
     spark.stop()
-
-def main():
-    DATA_PATH = "/share/MNIST/"
-    test_file = 'Test-label-28x28.csv'
-    train_file = 'Train-label-28x28.csv'
-
-    dimension, k, output_path = init_par()
-    pca = pca_m(dimension)
-
-    # pre process for test dataset
-    test_df = read_CSV(DATA_PATH, test_file)
-    test_vectors = vectorization(test_df)
-    pca.fit_test(test_vectors)
-    test_pca = pca.pca_process(test_vectors)
-
-    # pre process for train dataset
-    train_df = read_CSV(DATA_PATH, train_file)
-    train_vectors = vectorization(train_df)
-    train_pca = pca.pca_process(train_vectors)
-
-    # divide train data to features and labels
-    tr_pca, tr_label = divide_train(train_pca)
-
-    # KNN
-    knn_m = KNN(tr_pca, tr_label)
-    result = knn_m.predict(test_pca)
-    print(result.take(5))
-
-    knn_m.con_m()
-
-    # format result and output
-    def format(record):
-        pre, ori = record
-        return ("label: {}, prediction: {};".format(ori, pre))
-
-    # formatted_res = result.map(format)
-    # formatted_res.saveAsTextFile(output_path)
-
-    stop_context()
-
-if __name__ == "__main__":
-    main()
