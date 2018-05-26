@@ -1,4 +1,5 @@
 from units import *
+from pyspark.accumulators import AccumulatorParam
 
 def main():
     DATA_PATH = "/share/MNIST/"
@@ -28,7 +29,28 @@ def main():
     result = knn_m.predict(test_pca)
     print(result.take(5))
 
-    showMatrics(result)
+    TP_counter = spark.sparkContext.accumulator([0 for i in range(LABEL_NUM)], ListParam())
+    FP_counter = spark.sparkContext.accumulator([0 for i in range(LABEL_NUM)], ListParam())
+    FN_counter = spark.sparkContext.accumulator([0 for i in range(LABEL_NUM)], ListParam())
+
+    def conf_matrix(record):
+        global TP_counter
+        global FP_counter
+        global FN_counter
+        prediction, label = record
+        print(prediction)
+        print(label)
+        if prediction == label:
+            TP_counter[prediction] += 1
+        else:
+            FN_counter[label] += 1
+            FP_counter[prediction] += 1
+
+    result.foreach(conf_matrix)
+
+    print(TP_counter)
+    print(FP_counter)
+    print(FN_counter)
 
     # format result and output
     def format(record):

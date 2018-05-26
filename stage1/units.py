@@ -4,7 +4,6 @@ from pyspark.ml.feature import PCA
 from pyspark.sql.types import StructField, FloatType, StructType, StringType
 import numpy as np
 import argparse
-from pyspark.accumulators import AccumulatorParam
 
 spark = SparkSession \
     .builder \
@@ -84,31 +83,6 @@ class ListParam(AccumulatorParam):
     def addInPlace(self, acc1, acc2):
         acc1.extend(acc2)
         return acc1
-
-TP_counter = spark.sparkContext.accumulator([0 for i in range(LABEL_NUM)], ListParam())
-FP_counter = spark.sparkContext.accumulator([0 for i in range(LABEL_NUM)], ListParam())
-FN_counter = spark.sparkContext.accumulator([0 for i in range(LABEL_NUM)], ListParam())
-
-def showMatrics(p_a_ls):
-
-    def conf_matrix(record):
-        global TP_counter
-        global FP_counter
-        global FN_counter
-        prediction, label = record
-        print(prediction)
-        print(label)
-        if prediction == label:
-            TP_counter[prediction] += 1
-        else:
-            FN_counter[label] += 1
-            FP_counter[prediction] += 1
-
-    p_a_ls.foreach(conf_matrix)
-
-    print(TP_counter)
-    print(FP_counter)
-    print(FN_counter)
 
 def stop_context():
     spark.stop()
