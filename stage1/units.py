@@ -77,7 +77,7 @@ class KNN(object):
         tk_label = [x[0] for x in sorted_com]
         counts = np.bincount(tk_label)
         res = np.argmax(counts).item()
-        return (res, label)
+        return (int(res), int(label))
 
     def predict(self, test_pca):
         return test_pca.rdd.map(self.getNeighbours)
