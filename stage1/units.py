@@ -106,7 +106,7 @@ class KNN(object):
         return self.result
 
     def con_m(self):
-        self.result.foreach(conf_matrix)
+        self.result.foreach(self.conf_matrix)
 
         global TP_counter
         global FP_counter
