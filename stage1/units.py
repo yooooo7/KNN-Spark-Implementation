@@ -83,9 +83,9 @@ class KNN(object):
         return test_pca.rdd.map(self.getNeighbours)
 
 def showMatrics(p_a_ls):
-    print(TP_counter)
-    print(FP_counter)
-    print(FN_counter)
+    print(TP_counter[7])
+    print(FP_counter[6])
+    print(FN_counter[5])
 
     def conf_matrix(record):
         global TP_counter
