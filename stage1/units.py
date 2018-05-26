@@ -81,6 +81,9 @@ FP_counter = spark.sparkContext.accumulator([0 for i in range(10)], AccumulatorP
 FN_counter = spark.sparkContext.accumulator([0 for i in range(10)], AccumulatorParam())
 
 def showMatrics(p_a_ls):
+    print(TP_counter)
+    print(FP_counter)
+    print(FN_counter)
 
     def conf_matrix(record):
         global TP_counter
