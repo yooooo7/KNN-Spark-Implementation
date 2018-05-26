@@ -29,7 +29,7 @@ def init_par():
     parse = argparse.ArgumentParser()
     parse.add_argument("--dimension", help = "PCA dimension", default = 50)
     parse.add_argument("--k", help = "k nearest", default = 5)
-    parse.add_argument("--output", help="the output path", default="as2_stage1/outp_5.25")
+    parse.add_argument("--output", help="the output path", default="as2_stage1/outp_5.26")
     args = parse.parse_args()
     dimension = int(args.dimension)
     k = int(args.k)
@@ -149,9 +149,8 @@ def main():
     # KNN
     knn_m = KNN(tr_pca, tr_label)
     result = knn_m.predict(test_pca)
-    result.toDF().show(10000, False)
+    result.saveAsTextFile(output_path)
 
-    # Show metrics
     knn_m.show_metrics()
 
     stop_context()
