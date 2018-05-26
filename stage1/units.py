@@ -12,6 +12,18 @@ spark = SparkSession \
 
 LABEL_NUM = 10
 
+class ListParam(AccumulatorParam):
+    def zero(self, v):
+        return [0] * len(v)
+    def addInPlace(self, acc1, acc2):
+        for i in xrange(len(acc1)):
+            acc1[i] += acc2[i]
+        return acc1
+
+TP_counter = spark.sparkContext.accumulator([0 for i in range(LABEL_NUM)], ListParam())
+FP_counter = spark.sparkContext.accumulator([0 for i in range(LABEL_NUM)], ListParam())
+FN_counter = spark.sparkContext.accumulator([0 for i in range(LABEL_NUM)], ListParam())
+
 def init_par():
     parse = argparse.ArgumentParser()
     parse.add_argument("--dimension", help = "PCA dimension", default = 50)
