@@ -13,10 +13,6 @@ spark = SparkSession \
 
 LABEL_NUM = 10
 
-TP_counter = spark.sparkContext.accumulator([0 for i in range(LABEL_NUM)], AccumulatorParam())
-FP_counter = spark.sparkContext.accumulator([0 for i in range(LABEL_NUM)], AccumulatorParam())
-FN_counter = spark.sparkContext.accumulator([0 for i in range(LABEL_NUM)], AccumulatorParam())
-
 def init_par():
     parse = argparse.ArgumentParser()
     parse.add_argument("--dimension", help = "PCA dimension", default = 50)
@@ -82,25 +78,31 @@ class KNN(object):
     def predict(self, test_pca):
         return test_pca.rdd.map(self.getNeighbours)
 
+class ListParam(AccumulatorParam):
+    def zero(self, v):
+        return [0] * len(v)
+    def addInPlace(self, acc1, acc2):
+        acc1.extend(acc2)
+        return acc1
+
 def showMatrics(p_a_ls):
-    print(TP_counter.value[7])
-    print(FP_counter.value[6])
-    print(FN_counter.value[5])
+
+    TP_counter = spark.sparkContext.accumulator([0 for i in range(LABEL_NUM)], ListParam())
+    FP_counter = spark.sparkContext.accumulator([0 for i in range(LABEL_NUM)], ListParam())
+    FN_counter = spark.sparkContext.accumulator([0 for i in range(LABEL_NUM)], ListParam())
 
     def conf_matrix(record):
         global TP_counter
         global FP_counter
         global FN_counter
-        print(record)
-        prediction = record[0]
-        label = record[1]
+        prediction, label = record
         print(prediction)
         print(label)
         if prediction == label:
-            TP_counter.value[prediction] += 1
+            TP_counter[prediction] += 1
         else:
-            FN_counter.value[label] += 1
-            FP_counter.value[prediction] += 1
+            FN_counter[label] += 1
+            FP_counter[prediction] += 1
 
     p_a_ls.foreach(conf_matrix)
 
