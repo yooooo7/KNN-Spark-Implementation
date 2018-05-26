@@ -153,7 +153,7 @@ def main():
     # KNN
     knn_m = KNN(tr_pca, tr_label)
     result = knn_m.predict(test_pca)
-    print(result.take(5))
+    print(result.take(10))
 
     knn_m.show_metrics()
 
