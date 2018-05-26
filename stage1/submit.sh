@@ -3,5 +3,5 @@
 spark-submit \
     --master yarn \
     --deploy-mode client \
-    --num-executors 6 \
+    --num-executors 4 \
     units.py \
