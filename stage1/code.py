@@ -24,8 +24,8 @@ def main():
     tr_pca, tr_label = divide_train(train_pca)
 
     # KNN
-    knn_m = KNN(tr_pca, tr_label, test_pca)
-    result = knn_m.predict()
+    knn_m = KNN(tr_pca, tr_label)
+    result = knn_m.predict(test_pca)
     print(result.take(5))
 
     knn_m.con_m()

@@ -67,12 +67,11 @@ def divide_train(train_pca):
 tr_data = []
 tr_l = []
 class KNN(object):
-    def __init__(self, tr_pca, tr_label, test_pca):
+    def __init__(self, tr_pca, tr_label):
         global tr_data
         global tr_l
         tr_data = spark.sparkContext.broadcast(tr_pca)
         tr_l = spark.sparkContext.broadcast(tr_label)
-        self.test_pca = test_pca
 
     @staticmethod
     def getNeighbours(record):
@@ -94,16 +93,14 @@ class KNN(object):
         global FP_counter
         global FN_counter
         prediction, label = record
-        print(prediction)
-        print(label)
         if prediction == label:
             TP_counter[prediction] += 1
         else:
             FN_counter[label] += 1
             FP_counter[prediction] += 1
 
-    def predict(self):
-        self.result = self.test_pca.rdd.map(self.getNeighbours)
+    def predict(self, test_pca):
+        self.result = test_pca.rdd.map(self.getNeighbours)
         return self.result
 
     def con_m(self):
