@@ -85,10 +85,9 @@ class KNN(object):
         tk_label = [x[0] for x in sorted_com]
         counts = np.bincount(tk_label)
         res = np.argmax(counts).item()
-        return (int(res), int(label))
 
-    @staticmethod
-    def prePRF1(record):
+        res = int(res)
+        label = int(label)
         global TP_counter, FP_counter, FN_counter
         prediction, label = record
         c = [0] * LABEL_NUM
@@ -104,12 +103,13 @@ class KNN(object):
             c[prediction] = 1
             FP_counter += c
 
+        return (res, label)
+
     def predict(self, test_pca):
         self.result = test_pca.rdd.map(self.getNeighbours)
         return self.result
 
     def show_metrics(self):
-        self.result.foreach(self.prePRF1)
 
         for i in range(LABEL_NUM):
             TPs = TP_counter.value
