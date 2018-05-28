@@ -4,6 +4,12 @@ from pyspark.ml.classification import NaiveBayes
 from pyspark.ml.feature import PCA, MinMaxScaler
 from pyspark.ml.evaluation import MulticlassClassificationEvaluator
 from pyspark.ml.feature import VectorAssembler
+import argparse
+
+parse = argparse.ArgumentParser()
+parse.add_argument("--dimension", help = "PCA dimension", default = 50)
+args = parse.parse_args()
+dimension = int(args.dimension)
 
 spark = SparkSession \
     .builder \
@@ -26,31 +32,21 @@ scaler = MinMaxScaler(inputCol = pca.getOutputCol(), outputCol = "features", min
 nb = NaiveBayes(smoothing = 1.0, modelType = "multinomial", featuresCol = "features")
 pipeline = Pipeline(stages = [assembler, pca, scaler, nb])
 
-def trans(model):
-    # predict
-    prediction = model.transform(test)
-    prediction = prediction.select(['label', 'prediction'])
-
-    prediction.show(5)
-
-    # metrics
-    evaluator = MulticlassClassificationEvaluator(labelCol="label", predictionCol="prediction", metricName="accuracy")
-    accuracy = evaluator.evaluate(prediction)
-
-    print("Test set accuracy =" + str(accuracy))
-
 # fit
-paramMap = { pca.k: 50 }
-model_1 = pipeline.fit(training, paramMap)
-trans(model_1)
+paramMap = { pca.k: dimension }
+model = pipeline.fit(training, paramMap)
 
-paramMap[pca.k] = 2
-model_2 = pipeline.fit(training, paramMap)
-trans(model_2)
+# predict
+prediction = model.transform(test)
+prediction = prediction.select(['label', 'prediction'])
 
-paramMap[pca.k] = 748
-model_3 = pipeline.fit(training, paramMap)
-trans(model_3)
+prediction.show(5)
+
+# metrics
+evaluator = MulticlassClassificationEvaluator(labelCol="label", predictionCol="prediction", metricName="accuracy")
+accuracy = evaluator.evaluate(prediction)
+
+print("Test set accuracy =" + str(accuracy))
 
 # stop env
 spark.stop()

@@ -5,3 +5,4 @@ spark-submit \
     --deploy-mode client \
     --num-executors 4 \
     nb.py \
+    --dimension $1
