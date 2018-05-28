@@ -57,7 +57,6 @@ class pca_m(object):
         return pca_result
 
 def divide_train(train_pca):
-    train_pca = train_pca.repartition(1)
     tr_pca = np.array(train_pca.select(train_pca['pca']).collect())[:, 0, :]
     tr_label = np.array(train_pca.select(train_pca['label']).collect())
     return tr_pca, tr_label
