@@ -30,11 +30,9 @@ def init_par():
     parse = argparse.ArgumentParser()
     parse.add_argument("--dimension", help = "PCA dimension", default = 50)
     parse.add_argument("--k", help = "k nearest", default = 5)
-    parse.add_argument("--output", help="the output path", default="as2_stage1/")
     args = parse.parse_args()
     dimension = int(args.dimension)
     k = int(args.k)
-    outp_path = args.output
     return (dimension, k, outp_path)
 
 def read_CSV(DATA_PATH, datafile):
