@@ -25,7 +25,7 @@ FP_counter = spark.sparkContext.accumulator([0] * LABEL_NUM, ListParam())
 FN_counter = spark.sparkContext.accumulator([0] * LABEL_NUM, ListParam())
 
 parse = argparse.ArgumentParser()
-parse.add_argument("--dimension", help = "PCA dimension", default = 50)
+parse.add_argument("--dimension", help = "PCA dimension", default = 100)
 parse.add_argument("--k", help = "k nearest", default = 10)
 args = parse.parse_args()
 dimension = int(args.dimension)
