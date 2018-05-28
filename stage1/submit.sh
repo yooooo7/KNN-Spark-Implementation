@@ -3,8 +3,6 @@
 spark-submit \
     --master yarn \
     --deploy-mode client \
-    --num-executors $3 \
-    --executor-cores $4 \
-    units.py \
-    --dimension $1 \
-    --k $2
+    --num-executors $1 \
+    --executor-cores $2 \
+    units.py
