@@ -1,6 +1,7 @@
 from pyspark.sql import SparkSession
 from pyspark.ml import Pipeline
 from pyspark.ml.classification import NaiveBayes
+from pyspark.ml.feature import PCA, MinMaxScaler
 from pyspark.ml.evaluation import MulticlassClassificationEvaluator
 from pyspark.ml.feature import VectorAssembler
 
@@ -19,9 +20,11 @@ test = spark.read.csv(DATA_PATH + test_file, header = False, inferSchema = "true
 
 # Configure an ML pipeline, which consists of two stages: assembler, pca, naive bayes
 columns = training.columns[1:]
-assembler = VectorAssembler(inputCols = columns, outputCol = "features")
-nb = NaiveBayes(smoothing = 1.0, modelType = "multinomial")
-pipeline = Pipeline(stages = [assembler, nb])
+assembler = VectorAssembler(inputCols = columns, outputCol = "v_features")
+pca = PCA(k = 50, inputCol = assembler.getOutputCol(), outputCol = "p_features")
+scaler = MinMaxScaler(inputCol = pca.getOutputCol(), outputCol = "features", min = 0.0, max = 1.0)
+nb = NaiveBayes(smoothing = 1.0, modelType = "multinomial" featuresCol = "features")
+pipeline = Pipeline(stages = [assembler, pca, scaler, nb])
 
 # fit
 model = pipeline.fit(training)

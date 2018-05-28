@@ -29,7 +29,7 @@ def init_par():
     parse = argparse.ArgumentParser()
     parse.add_argument("--dimension", help = "PCA dimension", default = 50)
     parse.add_argument("--k", help = "k nearest", default = 5)
-    parse.add_argument("--output", help="the output path", default="as2_stage1/outp_5.26")
+    parse.add_argument("--output", help="the output path", default="as2_stage1/")
     args = parse.parse_args()
     dimension = int(args.dimension)
     k = int(args.k)
@@ -67,11 +67,13 @@ def divide_train(train_pca):
 tr_data = []
 tr_l = []
 class KNN(object):
-    def __init__(self, tr_pca, tr_label):
+    def __init__(self, tr_pca, tr_label, k):
         global tr_data
         global tr_l
         tr_data = spark.sparkContext.broadcast(tr_pca)
         tr_l = spark.sparkContext.broadcast(tr_label)
+
+        self.k = k
 
     @staticmethod
     def getNeighbours(record):
@@ -81,7 +83,7 @@ class KNN(object):
         tr_label = tr_l.value
         dis = np.sqrt( np.sum( ((train - test_features) ** 2), axis = 1 ))[:, np.newaxis]
         com = np.concatenate((tr_label, dis), axis = 1)
-        sorted_com = sorted(com, key = lambda x: x[1])[:5]
+        sorted_com = sorted(com, key = lambda x: x[1])[:self.k]
         tk_label = [x[0] for x in sorted_com]
         counts = np.bincount(tk_label)
         prediction = np.argmax(counts).item()
@@ -123,7 +125,6 @@ class KNN(object):
 def stop_context():
     spark.stop()
 
-
 def main():
     DATA_PATH = "/share/MNIST/"
     test_file = 'Test-label-28x28.csv'
@@ -147,10 +148,13 @@ def main():
     tr_pca, tr_label = divide_train(train_pca)
 
     # KNN
-    knn_m = KNN(tr_pca, tr_label)
+    knn_m = KNN(tr_pca, tr_label, k)
     result = knn_m.predict(test_pca)
+
+    # save result
     result.saveAsTextFile(output_path)
 
+    # for each label, show precision recall and f1-score
     knn_m.show_metrics()
 
     stop_context()
