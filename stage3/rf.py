@@ -31,13 +31,13 @@ pipeline = Pipeline(stages = [assembler, rf])
 
 # fit
 paramMap = { rf.numTrees: tree_nums }
-model = pipeline.fit(training)
+model = pipeline.fit(training, paramMap)
 
 # predict
 prediction = model.transform(test)
 prediction = prediction.select(['label', 'prediction'])
 
-prediction.show(10)
+prediction.show(5)
 
 # metrics
 evaluator = MulticlassClassificationEvaluator(labelCol="label", predictionCol="prediction", metricName="accuracy")
