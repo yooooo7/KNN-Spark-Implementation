@@ -25,8 +25,8 @@ FP_counter = spark.sparkContext.accumulator([0] * LABEL_NUM, ListParam())
 FN_counter = spark.sparkContext.accumulator([0] * LABEL_NUM, ListParam())
 
 parse = argparse.ArgumentParser()
-parse.add_argument("--dimension", help = "PCA dimension", default = 100)
-parse.add_argument("--k", help = "k nearest", default = 5)
+parse.add_argument("--dimension", help = "PCA dimension", default = 50)
+parse.add_argument("--k", help = "k nearest", default = 10)
 args = parse.parse_args()
 dimension = int(args.dimension)
 k = int(args.k)
@@ -135,7 +135,7 @@ def main():
     train_pca = pca.pca_process(train_vectors)
 
     # pre process for test dataset
-    test_df = read_CSV(DATA_PATH, test_file).repartition(16)
+    test_df = read_CSV(DATA_PATH, test_file).repartition(REPRETATION_NUM)
     test_vectors = vectorization(test_df)
     test_pca = pca.pca_process(test_vectors)
 
