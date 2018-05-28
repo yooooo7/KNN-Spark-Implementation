@@ -1,9 +1,7 @@
 from pyspark.sql import SparkSession
 from pyspark.ml.feature import VectorAssembler
 from pyspark.ml.feature import PCA
-from pyspark.sql.types import StructField, FloatType, StructType, StringType
 from pyspark.accumulators import AccumulatorParam
-from pyspark.ml import Pipeline
 import numpy as np
 import argparse
 
@@ -33,7 +31,7 @@ def init_par():
     args = parse.parse_args()
     dimension = int(args.dimension)
     k = int(args.k)
-    return (dimension, k, outp_path)
+    return (dimension, k)
 
 def read_CSV(DATA_PATH, datafile):
     test_df = spark.read.csv(DATA_PATH + datafile, header = False, inferSchema = "true")
@@ -130,7 +128,7 @@ def main():
     test_file = 'Test-label-28x28.csv'
     train_file = 'Train-label-28x28.csv'
 
-    dimension, k, output_path = init_par()
+    dimension, k = init_par()
     pca = pca_m(dimension)
 
     # pre process for train dataset
