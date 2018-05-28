@@ -2,9 +2,10 @@ from pyspark.sql import SparkSession
 from pyspark.ml.feature import VectorAssembler
 from pyspark.ml.feature import PCA
 from pyspark.sql.types import StructField, FloatType, StructType, StringType
+from pyspark.accumulators import AccumulatorParam
+from pyspark.ml import Pipeline
 import numpy as np
 import argparse
-from pyspark.accumulators import AccumulatorParam
 
 spark = SparkSession \
     .builder \
@@ -52,8 +53,8 @@ class pca_m(object):
     def __init__(self, dimension):
         self.pca_model = PCA(k = dimension, inputCol = "features", outputCol = 'pca')
 
-    def fit_test(self, test_vectors):
-        self.test_fitted = self.pca_model.fit(test_vectors)
+    def fit_train(self, train_vectors):
+        self.test_fitted = self.pca_model.fit(train_vectors)
 
     def pca_process(self, vectors):
         pca_result = self.test_fitted.transform(vectors).select("label","pca")
@@ -103,6 +104,7 @@ class KNN(object):
 
             c[prediction] = 1
             FP_counter += c
+            c[prediction] = 0
 
         return ("label: {}, prediction: {};".format(label, prediction))
 
@@ -133,16 +135,16 @@ def main():
     dimension, k, output_path = init_par()
     pca = pca_m(dimension)
 
-    # pre process for test dataset
-    test_df = read_CSV(DATA_PATH, test_file)
-    test_vectors = vectorization(test_df)
-    pca.fit_test(test_vectors)
-    test_pca = pca.pca_process(test_vectors)
-
     # pre process for train dataset
     train_df = read_CSV(DATA_PATH, train_file)
     train_vectors = vectorization(train_df)
+    pca.fit_train(train_vectors)
     train_pca = pca.pca_process(train_vectors)
+
+    # pre process for test dataset
+    test_df = read_CSV(DATA_PATH, test_file)
+    test_vectors = vectorization(test_df)
+    test_pca = pca.pca_process(test_vectors)
 
     # divide train data to features and labels
     tr_pca, tr_label = divide_train(train_pca)
@@ -151,8 +153,11 @@ def main():
     knn_m = KNN(tr_pca, tr_label, k)
     result = knn_m.predict(test_pca)
 
+    # persist result after next action for future calculate
+    result.persist()
+
     # save result
-    result.saveAsTextFile(output_path)
+    print(result.collect())
 
     # for each label, show precision recall and f1-score
     knn_m.show_metrics()
