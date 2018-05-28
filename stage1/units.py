@@ -135,7 +135,7 @@ def main():
     train_pca = pca.pca_process(train_vectors)
 
     # pre process for test dataset
-    test_df = read_CSV(DATA_PATH, test_file).repartition(16)
+    test_df = read_CSV(DATA_PATH, test_file).repartition(32)
     test_vectors = vectorization(test_df)
     test_pca = pca.pca_process(test_vectors)
 
