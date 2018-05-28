@@ -26,21 +26,7 @@ scaler = MinMaxScaler(inputCol = pca.getOutputCol(), outputCol = "features", min
 nb = NaiveBayes(smoothing = 1.0, modelType = "multinomial", featuresCol = "features")
 pipeline = Pipeline(stages = [assembler, pca, scaler, nb])
 
-# fit
-paramMap = { pca.k: 50 }
-model_1 = pipeline.fit(training, paramMap)
-
-paramMap[pca.k] = 2
-model_2 = pipeline.fit(training, paramMap)
-
-paramMap[pca.k] = 748
-model_3 = pipeline.fit(training, paramMap)
-
-transform(model_1)
-transform(model_2)
-transform(model_3)
-
-def transform(model):
+def trans(model):
     # predict
     prediction = model.transform(test)
     prediction = prediction.select(['label', 'prediction'])
@@ -52,6 +38,19 @@ def transform(model):
     accuracy = evaluator.evaluate(prediction)
 
     print("Test set accuracy =" + str(accuracy))
+
+# fit
+paramMap = { pca.k: 50 }
+model_1 = pipeline.fit(training, paramMap)
+trans(model_1)
+
+paramMap[pca.k] = 2
+model_2 = pipeline.fit(training, paramMap)
+trans(model_2)
+
+paramMap[pca.k] = 748
+model_3 = pipeline.fit(training, paramMap)
+trans(model_3)
 
 # stop env
 spark.stop()
