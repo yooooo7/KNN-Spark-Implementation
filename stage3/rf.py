@@ -3,6 +3,12 @@ from pyspark.ml import Pipeline
 from pyspark.ml.classification import RandomForestClassifier
 from pyspark.ml.feature import VectorAssembler
 from pyspark.ml.evaluation import MulticlassClassificationEvaluator
+import argparse
+
+parse = argparse.ArgumentParser()
+parse.add_argument("--treenums", help = "PCA dimension", default = 50)
+args = parse.parse_args()
+tree_nums = int(args.treenums)
 
 spark = SparkSession \
     .builder \
@@ -24,6 +30,7 @@ rf = RandomForestClassifier(labelCol="label", featuresCol="features", numTrees=1
 pipeline = Pipeline(stages = [assembler, rf])
 
 # fit
+paramMap = { rf.numTrees: tree_nums }
 model = pipeline.fit(training)
 
 # predict
