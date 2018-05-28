@@ -27,19 +27,31 @@ nb = NaiveBayes(smoothing = 1.0, modelType = "multinomial", featuresCol = "featu
 pipeline = Pipeline(stages = [assembler, pca, scaler, nb])
 
 # fit
-model = pipeline.fit(training)
+paramMap = { pca.k = 50 }
+model_1 = pipeline.fit(training, paramMap)
 
-# predict
-prediction = model.transform(test)
-prediction = prediction.select(['label', 'prediction'])
+paramMap[pca.k] = 2
+model_2 = pipeline.fit(training, paramMap)
 
-prediction.show(5)
+paramMap[pca.k] = 748
+model_3 = pipeline.fit(training, paramMap)
 
-# metrics
-evaluator = MulticlassClassificationEvaluator(labelCol="label", predictionCol="prediction", metricName="accuracy")
-accuracy = evaluator.evaluate(prediction)
+transform(model_1)
+transform(model_2)
+transform(model_3)
 
-print("Test set accuracy =" + str(accuracy))
+def transform(model):
+    # predict
+    prediction = model.transform(test)
+    prediction = prediction.select(['label', 'prediction'])
+
+    prediction.show(5)
+
+    # metrics
+    evaluator = MulticlassClassificationEvaluator(labelCol="label", predictionCol="prediction", metricName="accuracy")
+    accuracy = evaluator.evaluate(prediction)
+
+    print("Test set accuracy =" + str(accuracy))
 
 # stop env
 spark.stop()
