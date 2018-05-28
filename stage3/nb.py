@@ -23,7 +23,7 @@ columns = training.columns[1:]
 assembler = VectorAssembler(inputCols = columns, outputCol = "v_features")
 pca = PCA(k = 50, inputCol = assembler.getOutputCol(), outputCol = "p_features")
 scaler = MinMaxScaler(inputCol = pca.getOutputCol(), outputCol = "features", min = 0.0, max = 1.0)
-nb = NaiveBayes(smoothing = 1.0, modelType = "multinomial" featuresCol = "features")
+nb = NaiveBayes(smoothing = 1.0, modelType = "multinomial", featuresCol = "features")
 pipeline = Pipeline(stages = [assembler, pca, scaler, nb])
 
 # fit
