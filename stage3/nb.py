@@ -27,7 +27,7 @@ nb = NaiveBayes(smoothing = 1.0, modelType = "multinomial", featuresCol = "featu
 pipeline = Pipeline(stages = [assembler, pca, scaler, nb])
 
 # fit
-paramMap = { pca.k = 50 }
+paramMap = { pca.k: 50 }
 model_1 = pipeline.fit(training, paramMap)
 
 paramMap[pca.k] = 2
