@@ -113,7 +113,7 @@ class KNN(object):
             p = round(TPs[i] / float( TPs[i] + FPs[i] ), 2)
             r = round(TPs[i] / float( TPs[i] + FNs[i] ), 2)
             F1_score = round(2*p*r / (p + r), 2)
-            print("label: {}\tprecision: {}\trecall: {}\tf1-score: {}\n".format(label, p, r, F1_score))
+            print("label: {}\tprecision: {}  recall: {}  f1-score: {}\n".format(label, p, r, F1_score))
 
 def stop_context():
     spark.stop()
