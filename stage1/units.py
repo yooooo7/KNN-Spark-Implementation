@@ -131,8 +131,6 @@ def main():
 
     exa = test_pca.rdd.take(1)
 
-    test(exa)
-
     def test(record):
         label, test_features = record
         test_features = np.array(test_features)
@@ -153,6 +151,7 @@ def main():
         prediction = np.argmax(nearest_dists).item()
         print(prediction)
 
+    test(exa)
     # KNN
     # knn_m = KNN(tr_pca, tr_label)
     # result = knn_m.predict(test_pca)
