@@ -37,7 +37,7 @@ parse.add_argument("--totalcore", help = "total core")
 args = parse.parse_args()
 dimension = int(args.dimension)
 k = int(args.k)
-total_core = int(arg.totalcore)
+total_core = int(args.totalcore)
 
 REPRETATION_NUM = total_core*2
 
