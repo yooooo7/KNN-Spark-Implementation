@@ -75,13 +75,10 @@ class KNN(object):
         tr_label = tr_l.value
         # Caculate Euclidean distance
         # dis = np.sqrt( np.sum( ((train - test_features) ** 2), axis = 1 ))[:, np.newaxis]
-        dis = np.sqrt( np.sum( ((train - test_features) ** 2), axis = 1 ))
-        ids = np.argpartition(dis, k)[:k]
-        # com = np.concatenate((tr_label, dis), axis = 1)
+        dis = np.sqrt( np.sum( ((train - test_features) ** 2), axis = 1 ))[:, np.newaxis]
+        ids = np.argpartition(dis, k, axis=0)[:k]
         # get k nearest neighbours
         nearest_dists = np.take(tr_label, ids)
-        # sorted_com = sorted(com, key = lambda x: x[1])[:k]
-        # tk_label = [x[0] for x in sorted_com]
         # vote
         counts = np.bincount(nearest_dists)
         prediction = np.argmax(nearest_dists).item()
