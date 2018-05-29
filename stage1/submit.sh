@@ -5,4 +5,4 @@ spark-submit \
     --deploy-mode client \
     --num-executors $1 \
     --executor-cores $2 \
-    units.py
+    main.py
