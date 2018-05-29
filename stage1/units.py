@@ -132,7 +132,7 @@ def main():
     exa = test_pca.rdd.take(1)
 
     def test(record):
-        label, test_features = record
+        label, test_features = record[0]
         test_features = np.array(test_features)
         train = tr_data.value
         tr_label = tr_l.value
