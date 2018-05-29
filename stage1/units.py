@@ -75,7 +75,7 @@ class KNN(object):
         tr_label = tr_l.value
         # Caculate Euclidean distance
         # dis = np.sqrt( np.sum( ((train - test_features) ** 2), axis = 1 ))[:, np.newaxis]
-        dis = np.sqrt( np.sum( ((train - test_features) ** 2), axis = 1 )).reshape(1, 60000)
+        dis = np.sqrt( np.sum( ((train - test_features) ** 2), axis = 1 ))
         ids = np.argpartition(dis, k, axis=0)[:k]
         # get k nearest neighbours
         nearest_dists = np.take(tr_label, ids)
