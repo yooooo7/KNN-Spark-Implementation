@@ -151,6 +151,7 @@ def main():
         prediction = np.argmax(nearest_dists).item()
         print(prediction)
 
+    print(exa)
     test(exa)
     # KNN
     # knn_m = KNN(tr_pca, tr_label)
