@@ -33,9 +33,13 @@ FN_counter = spark.sparkContext.accumulator([0] * LABEL_NUM, ListParam())
 parse = argparse.ArgumentParser()
 parse.add_argument("--dimension", help = "PCA dimension", default = 50)
 parse.add_argument("--k", help = "k nearest", default = 10)
+arse.add_argument("--totalcore", help = "total core", default = 8)
 args = parse.parse_args()
 dimension = int(args.dimension)
 k = int(args.k)
+total_core = int(arg.totalcore)
+
+REPRETATION_NUM = total_core*2
 
 test_df = spark.read.csv(DATA_PATH + test_file, header = False, inferSchema = "true").withColumnRenamed("_c0", 'label')
 train_df = spark.read.csv(DATA_PATH + train_file, header = False, inferSchema = "true").withColumnRenamed("_c0", 'label')
