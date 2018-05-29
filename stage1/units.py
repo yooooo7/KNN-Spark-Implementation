@@ -136,7 +136,7 @@ def main():
     result.persist()
 
     # collect result
-    print(result.collect())
+    result.collect()
 
     # for each label, show precision recall and f1-score
     knn_m.show_metrics()
