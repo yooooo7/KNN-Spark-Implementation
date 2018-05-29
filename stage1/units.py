@@ -129,10 +129,15 @@ def main():
     # divide train data to features and labels
     tr_pca, tr_label = divide_train(train_pca)
 
+    tr_data = spark.sparkContext.broadcast(tr_pca)
+    tr_l = spark.sparkContext.broadcast(tr_label)
+
     exa = test_pca.rdd.take(1)
 
     def test(record):
-        label, test_features = record[0]
+        label= record[0].label
+        test_features = record[0].pca
+        print(label, test_features)
         test_features = np.array(test_features)
         train = tr_data.value
         tr_label = tr_l.value
