@@ -79,7 +79,7 @@ class KNN(object):
         ids = np.argpartition(dis, k)[:k]
         # com = np.concatenate((tr_label, dis), axis = 1)
         # get k nearest neighbours
-        nearest_dists = np.take(tr_label, idx)
+        nearest_dists = np.take(tr_label, ids)
         # sorted_com = sorted(com, key = lambda x: x[1])[:k]
         # tk_label = [x[0] for x in sorted_com]
         # vote
