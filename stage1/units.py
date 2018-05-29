@@ -25,36 +25,29 @@ FP_counter = spark.sparkContext.accumulator([0] * LABEL_NUM, ListParam())
 FN_counter = spark.sparkContext.accumulator([0] * LABEL_NUM, ListParam())
 
 parse = argparse.ArgumentParser()
-parse.add_argument("--dimension", help = "PCA dimension", default = 100)
-parse.add_argument("--k", help = "k nearest", default = 10)
+parse.add_argument("--dimension", help = "PCA dimension", default = 50)
+parse.add_argument("--k", help = "k nearest", default = 5)
 args = parse.parse_args()
 dimension = int(args.dimension)
 k = int(args.k)
 
 REPRETATION_NUM = 16
 
-def read_CSV(DATA_PATH, datafile):
-    test_df = spark.read.csv(DATA_PATH + datafile, header = False, inferSchema = "true")
-    return test_df
+DATA_PATH = "/share/MNIST/"
+test_file = 'Test-label-28x28.csv'
+train_file = 'Train-label-28x28.csv'
 
-def vectorization(df):
-    assembler = VectorAssembler(
-        inputCols = df.columns[1:],
-        outputCol = "features"
-        )
-    test_vectors = assembler.transform(df).select(df["_c0"].alias("label"),"features")
-    return test_vectors
+test_df = spark.read.csv(DATA_PATH + test_file, header = False, inferSchema = "true").withColumnRenamed("_c0", 'label')
+train_df = spark.read.csv(DATA_PATH + train_file, header = False, inferSchema = "true").withColumnRenamed("_c0", 'label')
+columns = train_df.columns[1:]
+assembler = VectorAssembler(inputCols = columns, outputCol = "features")
+pca = PCA(k = 50, inputCol = "features", outputCol = 'pca')
 
-class pca_m(object):
-    def __init__(self, dimension):
-        self.pca_model = PCA(k = dimension, inputCol = "features", outputCol = 'pca')
+pipeline = Pipeline(stages = [assembler, pca])
 
-    def fit_train(self, train_vectors):
-        self.test_fitted = self.pca_model.fit(train_vectors)
-
-    def pca_process(self, vectors):
-        pca_result = self.test_fitted.transform(vectors).select("label","pca")
-        return pca_result
+# fit
+paramMap = { pca.k: dimension }
+model = pipeline.fit(train_df, paramMap)
 
 def divide_train(train_pca):
     tr_pca = np.array(train_pca.select(train_pca['pca']).collect())[:, 0, :]
@@ -100,7 +93,7 @@ class KNN(object):
             FP_counter += c
             c[prediction] = 0
 
-        return ("label: {}, prediction: {};".format(label, prediction))
+        return (label, prediction)
 
     def predict(self, test_pca):
         self.result = test_pca.rdd.map(self.getNeighbours)
@@ -122,22 +115,8 @@ def stop_context():
     spark.stop()
 
 def main():
-    DATA_PATH = "/share/MNIST/"
-    test_file = 'Test-label-28x28.csv'
-    train_file = 'Train-label-28x28.csv'
-
-    pca = pca_m(dimension)
-
-    # pre process for train dataset
-    train_df = read_CSV(DATA_PATH, train_file)
-    train_vectors = vectorization(train_df)
-    pca.fit_train(train_vectors)
-    train_pca = pca.pca_process(train_vectors)
-
-    # pre process for test dataset
-    test_df = read_CSV(DATA_PATH, test_file).repartition(REPRETATION_NUM)
-    test_vectors = vectorization(test_df)
-    test_pca = pca.pca_process(test_vectors)
+    train_pca = model.transform(train_df).select(['label', 'pca'])
+    test_pca =  model.transform(test_df).select(['label', 'pca']).repartition(REPRETATION_NUM)
 
     # divide train data to features and labels
     tr_pca, tr_label = divide_train(train_pca)
@@ -155,6 +134,7 @@ def main():
     # for each label, show precision recall and f1-score
     knn_m.show_metrics()
 
+    # stop spark session instance
     stop_context()
 
 if __name__ == "__main__":
