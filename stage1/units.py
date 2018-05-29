@@ -128,9 +128,6 @@ def main():
     # divide train data to features and labels
     tr_pca, tr_label = divide_train(train_pca)
 
-    tr_data = spark.sparkContext.broadcast(tr_pca)
-    tr_l = spark.sparkContext.broadcast(tr_label)
-
     # KNN
     knn_m = KNN(tr_pca, tr_label)
     result = knn_m.predict(test_pca)
