@@ -71,6 +71,7 @@ class KNN(object):
     def getNeighbours(record):
         label, test_features = record
         test_features = np.array(test_features)
+        # get broadcast value
         train = tr_data.value
         tr_label = tr_l.value
         # Caculate Euclidean distance
