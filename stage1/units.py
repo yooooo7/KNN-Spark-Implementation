@@ -74,14 +74,13 @@ class KNN(object):
         train = tr_data.value
         tr_label = tr_l.value
         # Caculate Euclidean distance
-        # dis = np.sqrt( np.sum( ((train - test_features) ** 2), axis = 1 ))[:, np.newaxis]
         dis = np.sqrt( np.sum( ((train - test_features) ** 2), axis = 1 ))
         ids = np.argpartition(dis, k)[:k]
         # get k nearest neighbours
         nearest_dists = np.take(tr_label, ids)
         # vote
         counts = np.bincount(nearest_dists)
-        prediction = np.argmax(nearest_dists).item()
+        prediction = np.argmax(counts).item()
 
         # accumulate TP, FP and FN
         prediction = int(prediction)
@@ -132,44 +131,18 @@ def main():
     tr_data = spark.sparkContext.broadcast(tr_pca)
     tr_l = spark.sparkContext.broadcast(tr_label)
 
-    exa = test_pca.rdd.take(1)
-
-    def test(record):
-        label= record[0].label
-        test_features = record[0].pca
-        print(label, test_features)
-        test_features = np.array(test_features)
-        train = tr_data.value
-        tr_label = tr_l.value
-        # Caculate Euclidean distance
-        # dis = np.sqrt( np.sum( ((train - test_features) ** 2), axis = 1 ))[:, np.newaxis]
-        dis = np.sqrt( np.sum( ((train - test_features) ** 2), axis = 1 ))
-        print(dis[:5])
-        ids = np.argpartition(dis, k)[:k]
-        print(ids)
-        # get k nearest neighbours
-        nearest_dists = np.take(tr_label, ids)
-        print(nearest_dists)
-        # vote
-        counts = np.bincount(nearest_dists)
-        print(counts)
-        prediction = np.argmax(nearest_dists).item()
-        print(prediction)
-
-    print(exa)
-    test(exa)
     # KNN
-    # knn_m = KNN(tr_pca, tr_label)
-    # result = knn_m.predict(test_pca)
+    knn_m = KNN(tr_pca, tr_label)
+    result = knn_m.predict(test_pca)
 
     # persist result after next action for future calculate
-    # result.persist()
+    result.persist()
 
     # collect result
-    # print(result.collect())
+    print(result.collect())
 
     # for each label, show precision recall and f1-score
-    # knn_m.show_metrics()
+    knn_m.show_metrics()
 
     # stop spark session instance
     stop_context()
