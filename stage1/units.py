@@ -72,7 +72,7 @@ class KNN(object):
         label, test_features = record
         test_features = np.array(test_features)
         train = tr_data.value
-        tr_label = tr_l.value
+        tr_label = tr_l.value.reshape(60000, 1)
         # Caculate Euclidean distance
         # dis = np.sqrt( np.sum( ((train - test_features) ** 2), axis = 1 ))[:, np.newaxis]
         dis = np.sqrt( np.sum( ((train - test_features) ** 2), axis = 1 ))
