@@ -2,6 +2,7 @@ from pyspark.sql import SparkSession
 from pyspark.ml.feature import VectorAssembler
 from pyspark.ml.feature import PCA
 from pyspark.accumulators import AccumulatorParam
+from pyspark.ml import Pipeline
 import numpy as np
 import argparse
 
@@ -10,7 +11,11 @@ spark = SparkSession \
     .appName("Spark KNN implementation") \
     .getOrCreate()
 
+DATA_PATH = "/share/MNIST/"
+test_file = 'Test-label-28x28.csv'
+train_file = 'Train-label-28x28.csv'
 LABEL_NUM = 10
+REPRETATION_NUM = 16
 
 class ListParam(AccumulatorParam):
     def zero(self, v):
@@ -30,12 +35,6 @@ parse.add_argument("--k", help = "k nearest", default = 5)
 args = parse.parse_args()
 dimension = int(args.dimension)
 k = int(args.k)
-
-REPRETATION_NUM = 16
-
-DATA_PATH = "/share/MNIST/"
-test_file = 'Test-label-28x28.csv'
-train_file = 'Train-label-28x28.csv'
 
 test_df = spark.read.csv(DATA_PATH + test_file, header = False, inferSchema = "true").withColumnRenamed("_c0", 'label')
 train_df = spark.read.csv(DATA_PATH + train_file, header = False, inferSchema = "true").withColumnRenamed("_c0", 'label')
