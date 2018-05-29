@@ -74,14 +74,17 @@ class KNN(object):
         train = tr_data.value
         tr_label = tr_l.value
         # Caculate Euclidean distance
-        dis = np.sqrt( np.sum( ((train - test_features) ** 2), axis = 1 ))[:, np.newaxis]
-        com = np.concatenate((tr_label, dis), axis = 1)
+        # dis = np.sqrt( np.sum( ((train - test_features) ** 2), axis = 1 ))[:, np.newaxis]
+        dis = np.sqrt( np.sum( ((train - test_features) ** 2), axis = 1 ))
+        ids = np.argpartition(dis, k)[:k]
+        # com = np.concatenate((tr_label, dis), axis = 1)
         # get k nearest neighbours
-        sorted_com = sorted(com, key = lambda x: x[1])[:k]
-        tk_label = [x[0] for x in sorted_com]
+        nearest_dists = np.take(tr_label, idx)
+        # sorted_com = sorted(com, key = lambda x: x[1])[:k]
+        # tk_label = [x[0] for x in sorted_com]
         # vote
-        counts = np.bincount(tk_label)
-        prediction = np.argmax(counts).item()
+        counts = np.bincount(nearest_dists)
+        prediction = np.argmax(nearest_dists).item()
 
         # accumulate TP, FP and FN
         prediction = int(prediction)
@@ -137,7 +140,7 @@ def main():
     result.persist()
 
     # collect result
-    result.collect()
+    print(result.collect())
 
     # for each label, show precision recall and f1-score
     knn_m.show_metrics()
