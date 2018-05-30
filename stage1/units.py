@@ -116,7 +116,7 @@ class KNN(object):
             label = str(i)
             p = round(TPs[i] / float( TPs[i] + FPs[i] ), 3)
             r = round(TPs[i] / float( TPs[i] + FNs[i] ), 3)
-            F1_score = round(2*p*r / (p + r), 2)
+            F1_score = round(2*p*r / (p + r), 3)
             print("label: {}\tprecision: {}  recall: {}  f1-score: {}\n".format(label, p, r, F1_score))
 
 def stop_context():
