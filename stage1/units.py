@@ -11,9 +11,9 @@ spark = SparkSession \
     .appName("Spark KNN implementation") \
     .getOrCreate()
 
-DATA_PATH = "/share/MNIST/"
-test_file = 'Test-label-28x28.csv'
-train_file = 'Train-label-28x28.csv'
+DATA_PATH = "/share/demo/MNIST-sample"
+test_file = 'Test-1000.csv'
+train_file = 'Train-6000.csv'
 
 LABEL_NUM = 10
 REPRETATION_NUM = 16
