@@ -11,7 +11,7 @@ spark = SparkSession \
     .appName("Spark KNN implementation") \
     .getOrCreate()
 
-DATA_PATH = "/share/demo/MNIST-sample"
+DATA_PATH = "/share/demo/MNIST-sample/"
 test_file = 'Test-1000.csv'
 train_file = 'Train-6000.csv'
 
