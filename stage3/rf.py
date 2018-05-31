@@ -19,7 +19,7 @@ DATA_PATH = "/share/demo/MNIST-sample/"
 test_file = 'Test-1000.csv'
 train_file = 'Train-6000.csv'
 
-# prepare training&test file
+# prepare training & test file
 training = spark.read.csv(DATA_PATH + train_file, header = False, inferSchema = "true").withColumnRenamed("_c0", 'label')
 test = spark.read.csv(DATA_PATH + test_file, header = False, inferSchema = "true").withColumnRenamed("_c0", 'label')
 
