@@ -16,9 +16,9 @@ spark = SparkSession \
     .appName("Spark NB implementation") \
     .getOrCreate()
 
-DATA_PATH = "/share/MNIST/"
-test_file = 'Test-label-28x28.csv'
-train_file = 'Train-label-28x28.csv'
+DATA_PATH = "/share/demo/MNIST-sample/"
+test_file = 'Test-1000.csv'
+train_file = 'Train-6000.csv'
 
 # prepare training&test file
 training = spark.read.csv(DATA_PATH + train_file, header = False, inferSchema = "true").withColumnRenamed("_c0", 'label')
