@@ -24,7 +24,7 @@ train_file = 'Train-6000.csv'
 training = spark.read.csv(DATA_PATH + train_file, header = False, inferSchema = "true").withColumnRenamed("_c0", 'label')
 test = spark.read.csv(DATA_PATH + test_file, header = False, inferSchema = "true").withColumnRenamed("_c0", 'label')
 
-# Configure an ML pipeline, which consists of two stages: assembler, pca, naive bayes
+# Configure an ML pipeline, which consists of four stages: assembler, pca, scaler, naive bayes
 columns = training.columns[1:]
 assembler = VectorAssembler(inputCols = columns, outputCol = "v_features")
 pca = PCA(k = 50, inputCol = assembler.getOutputCol(), outputCol = "p_features")
